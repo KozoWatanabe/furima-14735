@@ -18,11 +18,11 @@ RSpec.describe User, type: :model do
     end
     it '重複したemailが存在する場合は登録できない' do
       @user.save
-      another_user = FactoryBot.build(:user)
-      another_user.email = @user.email
+      another_user = FactoryBot.build(:user, email: @user.email) # emailのみ重複
       another_user.valid?
       expect(another_user.errors.full_messages).to include('Email has already been taken')
     end
+
     it 'emailは@を含まないと登録できない' do
       @user.email = 'testmail'
       @user.valid?
@@ -44,13 +44,14 @@ RSpec.describe User, type: :model do
       @user.password = '123456' # 数字のみ
       @user.password_confirmation = '123456'
       @user.valid?
-      expect(@user.errors.full_messages).to include('Password is invalid')
+      expect(@user.errors.full_messages).to include('Password は半角英数字混合で入力してください')
 
       @user.password = 'abcdef' # 英字のみ
       @user.password_confirmation = 'abcdef'
       @user.valid?
-      expect(@user.errors.full_messages).to include('Password is invalid')
+      expect(@user.errors.full_messages).to include('Password は半角英数字混合で入力してください')
     end
+
     it 'passwordとpassword_confirmationが不一致では登録できない' do
       @user.password = '123456'
       @user.password_confirmation = '1234567'
