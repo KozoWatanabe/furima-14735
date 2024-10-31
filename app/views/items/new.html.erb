@@ -50,13 +50,12 @@
           カテゴリー
           <span class="indispensable">必須</span>
         </div>
-        <%= f.collection_select(:category_id, [["---", nil], ["メンズ", 1], ["レディース", 2], ["ベビー・キッズ", 3], ["インテリア・住まい・小物", 4], ["本・音楽・ゲーム", 5], ["おもちゃ・ホビー・グッズ", 6], ["家電・スマホ・カメラ", 7], ["スポーツ・レジャー", 8], ["ハンドメイド", 9], ["その他", 10]], :second, :first, {}, {class:"select-box", id:"item-category"}) %>
-
+        <%= f.collection_select(:category_id, Category.all, :id, :name, { prompt: "---" }, { class: "select-box", id: "item-category" }) %>
         <div class="weight-bold-text">
           商品の状態
           <span class="indispensable">必須</span>
         </div>
-        <%= f.collection_select(:condition_id, [["---", nil], ["新品・未使用", 1], ["未使用に近い", 2], ["目立った傷や汚れなし", 3], ["やや傷や汚れあり", 4], ["傷や汚れあり", 5], ["全体的に状態が悪い", 6]], :second, :first, {}, {class:"select-box", id:"item-sales-status"}) %>
+        <%= f.collection_select(:condition_id, Condition.all, :id, :name, { prompt: "---" }, { class: "select-box", id: "item-sales-status" }) %>
       </div>
     </div>
     <%# /商品の詳細 %>
@@ -72,17 +71,17 @@
           配送料の負担
           <span class="indispensable">必須</span>
         </div>
-        <%= f.collection_select(:shipping_cost_id, [["---", nil], ["着払い(購入者負担)", 1], ["送料込み(出品者負担)", 2]], :second, :first, {}, {class:"select-box", id:"item-shipping-fee-status"}) %>
+        <%= f.collection_select(:shipping_cost_id, ShippingCost.all, :id, :name, { prompt: "---" }, { class: "select-box", id: "item-shipping-fee-status" }) %>
         <div class="weight-bold-text">
           発送元の地域
           <span class="indispensable">必須</span>
         </div>
-        <%= f.collection_select(:prefecture_id, [], :id, :name, {}, {class:"select-box", id:"item-prefecture"}) %>
+        <%= f.collection_select(:prefecture_id, Prefecture.all, :id, :name, { prompt: "---" }, { class: "select-box", id: "item-prefecture" }) %>
         <div class="weight-bold-text">
           発送までの日数
           <span class="indispensable">必須</span>
         </div>
-        <%= f.collection_select(:shipping_time_id, [], :id, :name, {}, {class:"select-box", id:"item-scheduled-delivery"}) %>
+        <%= f.collection_select(:shipping_time_id, ShippingTime.all, :id, :name, { prompt: "---" }, { class: "select-box", id: "item-shipping-time" }) %>
       </div>
     </div>
     <%# /配送について %>
