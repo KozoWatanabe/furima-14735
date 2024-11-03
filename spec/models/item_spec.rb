@@ -80,6 +80,18 @@ RSpec.describe Item, type: :model do
         @item.valid?
         expect(@item.errors.full_messages).to include("Image can't be blank")
       end
+
+      it 'userが紐づいていない場合は無効である' do
+        @item.user = nil
+        @item.valid?
+        expect(@item.errors.full_messages).to include('User must exist')
+      end
+
+      it '価格に半角数値以外が含まれている場合は無効である' do
+        @item.price = '３００' # 全角数字を設定
+        @item.valid?
+        expect(@item.errors.full_messages).to include('Price is not a number')
+      end
     end
   end
 end
