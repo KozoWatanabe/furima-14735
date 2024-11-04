@@ -129,10 +129,9 @@
     <% if @items.present? %>
       <% @items.each do |item| %>
         <li class='list'>
-            <div class='item-img-content'>
-              <%= image_tag(item.image.attached? ? item.image : "item-sample.png", class: "item-img") %>
-            </div>
-          <% end %>
+          <div class='item-img-content'>
+            <%= image_tag(item.image.attached? ? item.image : "https://tech-master.s3.amazonaws.com/uploads/curriculums/images/Rails1-4/sample.jpg", class: "item-img") %>
+          </div>
           <div class='item-info'>
             <h3 class='item-name'>
               <%= item.name %>
@@ -146,15 +145,13 @@
             </div>
           </div>
         </li>
-      <% end %>
+      <% end %> 
     <% else %>
-      <!-- 商品がないときのサンプル画像表示 -->
+      <!-- 商品がないときのサンプル画像とメッセージの表示 -->
       <li class='list'>
-        <%= link_to '#' do %>
-          <div class='item-img-content'>
-            <%= image_tag "item-sample.png", class: "item-img" %>
-          </div>
-        <% end %>
+        <div class='item-img-content'>
+          <%= image_tag "https://tech-master.s3.amazonaws.com/uploads/curriculums/images/Rails1-4/sample.jpg", class: "item-img" %>
+        </div>
         <div class='item-info'>
           <h3 class='item-name'>商品を出品してね！</h3>
           <div class='item-price'>
@@ -166,7 +163,7 @@
           </div>
         </div>
       </li>
-    <% end %>
+    <% end %> 
   </ul>
 </div>
 
