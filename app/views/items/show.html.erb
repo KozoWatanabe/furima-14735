@@ -21,8 +21,6 @@
         <%= @item.shipping_cost.name %>
       </span>
     </div>
-
-    <%# ログインしているユーザーと出品しているユーザーが、同一人物の場合と同一人物ではない場合で、処理を分けましょう %>
     <% if user_signed_in? && @item.present? %>
       <% if @item.user_id == current_user.id %>
         <%= link_to "商品の編集", "#", method: :get, class: "item-red-btn" %>
@@ -34,9 +32,7 @@
         <%= link_to "購入画面に進む", "#" ,class:"item-red-btn"%>
     <%# //商品が売れていない場合はこちらを表示しましょう %>
       <% end %>
-    <% end %>
-    <%# //ログインしているユーザーと出品しているユーザーが、同一人物の場合と同一人物ではない場合で、処理を分けましょう %>
-
+    <% end %> 
     <div class="item-explain-box">
       <span><%= @item.description %></span>
     </div>
@@ -103,7 +99,5 @@
       後ろの商品 ＞
     </a>
   </div>
-  <%# 詳細ページで表示されている商品のカテゴリー名を表示しましょう %>
   <a href="#" class="another-item"><%= @item.category.name %>をもっと見る</a>
-  <%# //詳細ページで表示されている商品のカテゴリー名を表示しましょう %>
 </div>
