@@ -129,7 +129,7 @@
     <% if @items.present? %>
       <% @items.each do |item| %>
         <li class='list'>
-          <%= link_to "#" do %>
+          <%= link_to item_path(item.id) do %>
           <div class='item-img-content'>
             <%= image_tag(item.image.attached? ? item.image : "https://tech-master.s3.amazonaws.com/uploads/curriculums/images/Rails1-4/sample.jpg", class: "item-img") %>
           </div>
@@ -151,7 +151,7 @@
     <% else %>
       <!-- 商品がないときのサンプル画像とメッセージの表示 -->
       <li class='list'>
-        <%= link_to '#' do %>
+        <%= link_to new_item_path do %>
         <div class='item-img-content'>
           <%= image_tag "https://tech-master.s3.amazonaws.com/uploads/curriculums/images/Rails1-4/sample.jpg", class: "item-img" %>
         </div>
