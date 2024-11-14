@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_item
+  before_action :set_item, only: [:index, :create]
   before_action :redirect_if_sold_out
 
   def index
@@ -27,7 +27,7 @@ class OrdersController < ApplicationController
   end
 
   def order_params
-    params.require(:orders_shared_addresses).permit(
+    params.require(:order_shared_addresses).permit(
       :postal_code, :prefecture_id, :city, :address, :building_name, :phone_number
     ).merge(user_id: current_user.id, item_id: @item.id)
   end
