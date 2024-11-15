@@ -11,15 +11,20 @@ class OrderSharedAddress
     validates :phone_number, format: { with: /\A\d{10,11}\z/, message: 'is invalid' }
     validates :item_id
     validates :user_id
-    validates :token
+    # validates :token
   end
 
-  # データの保存処理
+  # データ保存処理
   def save
     order = Order.create(user_id:, item_id:)
     SharedAddress.create(
-      postal_code:, prefecture_id:, city:, address:,
-      building_name:, phone_number:, order_id: order.id
+      postal_code:,
+      prefecture_id:,
+      city:,
+      address:,
+      building_name:,
+      phone_number:,
+      order_id: order.id
     )
   end
 end
