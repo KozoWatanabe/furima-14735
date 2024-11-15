@@ -10,7 +10,7 @@ class OrdersController < ApplicationController
   def create
     @order_form = OrderSharedAddress.new(order_params)
     if @order_form.save
-      redirect_to root_path, notice: '購入が完了しました'
+      redirect_to root_path
     else
       render :index
     end

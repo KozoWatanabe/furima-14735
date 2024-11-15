@@ -16,7 +16,10 @@ class OrderSharedAddress
 
   # データ保存処理
   def save
+    return false unless valid?
+
     order = Order.create(user_id:, item_id:)
+
     SharedAddress.create(
       postal_code:,
       prefecture_id:,
