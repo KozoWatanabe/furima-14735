@@ -34,13 +34,13 @@ class ItemsController < ApplicationController
     end
   end
 
-  # def destroy
-  #   if @item.destroy
-  #     redirect_to items_path
-  #   else
-  #     redirect_to item_path(@item)
-  #   end
-  # end
+  def destroy
+    if @item.destroy
+      redirect_to root_path
+    else
+      redirect_to item_path(@item)
+    end
+  end
 
   private
 
