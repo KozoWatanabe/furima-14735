@@ -1,4 +1,5 @@
 require 'rails_helper'
+
 RSpec.describe OrderSharedAddress, type: :model do
   describe '注文情報の保存' do
     before do
@@ -12,6 +13,11 @@ RSpec.describe OrderSharedAddress, type: :model do
 
       it 'building_nameは空でも保存できること' do
         @order_shared_address.building_name = ''
+        expect(@order_shared_address).to be_valid
+      end
+
+      it 'tokenがあれば保存できること' do
+        @order_shared_address.token = 'tok_abcdefghijk00000000000000000'
         expect(@order_shared_address).to be_valid
       end
     end
@@ -69,6 +75,12 @@ RSpec.describe OrderSharedAddress, type: :model do
         @order_shared_address.phone_number = '090123456789'
         @order_shared_address.valid?
         expect(@order_shared_address.errors.full_messages).to include('Phone number is invalid')
+      end
+
+      it 'tokenが空では登録できないこと' do
+        @order_shared_address.token = ''
+        @order_shared_address.valid?
+        expect(@order_shared_address.errors.full_messages).to include("Token can't be blank")
       end
     end
   end

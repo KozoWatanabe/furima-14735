@@ -11,7 +11,7 @@ class OrderSharedAddress
     validates :phone_number, format: { with: /\A\d{10,11}\z/, message: 'is invalid' }
     validates :item_id
     validates :user_id
-    # validates :token
+    validates :token
   end
 
   # データ保存処理
