@@ -2,7 +2,7 @@ class OrdersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_item, only: [:index, :create]
   before_action :redirect_if_sold_out, only: [:index, :create]
-
+  before_action :redirect_if_seller, only: [:index, :create]
   def index
     gon.public_key = ENV['PAYJP_PUBLIC_KEY']
     @order_form = OrderSharedAddress.new
@@ -12,9 +12,9 @@ class OrdersController < ApplicationController
     @order_form = OrderSharedAddress.new(order_params)
     Rails.logger.debug "Order Params: #{order_params.inspect}"
 
-    pay_item if @order_form.valid?
-
-    if @order_form.save
+    if @order_form.valid?
+      pay_item
+      @order_form.save
       redirect_to root_path
     else
       Rails.logger.debug "Validation Errors: #{@order_form.errors.full_messages}"
@@ -30,6 +30,10 @@ class OrdersController < ApplicationController
 
   def redirect_if_sold_out
     redirect_to root_path if @item.order.present?
+  end
+
+  def redirect_if_seller
+    redirect_to root_path if @item.user_id == current_user.id
   end
 
   def order_params
