@@ -17,4 +17,8 @@ class Item < ApplicationRecord
   validates :image, presence: true
   validates :category_id, :condition_id, :shipping_cost_id, :prefecture_id, :shipping_time_id,
             numericality: { other_than: 0, message: 'を選択してください' }
+
+  def sold_out?
+    order.present?
+  end
 end
