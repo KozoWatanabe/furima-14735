@@ -1,6 +1,7 @@
 class ItemsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_item, only: [:show, :edit, :update, :destroy]
+  before_action :redirect_if_not_seller, only: [:destroy]
   before_action :redirect_if_not_seller_or_sold_out, only: [:edit, :update]
 
   def index
@@ -53,6 +54,10 @@ class ItemsController < ApplicationController
 
   def set_item
     @item = Item.find(params[:id])
+  end
+
+  def redirect_if_not_seller
+    redirect_to root_path unless @item.user_id == current_user.id
   end
 
   def redirect_if_not_seller_or_sold_out
