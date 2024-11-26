@@ -1,4 +1,4 @@
-
+<%= render "shared/header" %>
 <div class='main'>
 
   <%# 画面上部の「人生を変えるフリマアプリ」帯部分 %>
@@ -132,6 +132,11 @@
           <%= link_to item_path(item.id) do %>
           <div class='item-img-content'>
             <%= image_tag(item.image.attached? ? item.image : "https://tech-master.s3.amazonaws.com/uploads/curriculums/images/Rails1-4/sample.jpg", class: "item-img") %>
+          <% if item.order.present? %>
+             <div class="sold-out">
+               <span>Sold Out!!</span>
+             </div>
+          <% end %>
           </div>
           <% end %>
           <div class='item-info'>
@@ -156,11 +161,6 @@
           <%= image_tag "https://tech-master.s3.amazonaws.com/uploads/curriculums/images/Rails1-4/sample.jpg", class: "item-img" %>
         </div>
         <% end %>
-        <%# 商品が売れていればsold outを表示しましょう %>
-        <div class='sold-out'>
-          <span>Sold Out!!</span>
-        </div>
-<%# //商品が売れていればsold outを表示しましょう %>
         <div class='item-info'>
           <h3 class='item-name'>商品を出品してね！</h3>
           <div class='item-price'>
@@ -181,3 +181,4 @@
   <span class='purchase-btn-text'>出品する</span>
   <%= image_tag 'icon_camera.png', size: '185x50', class: 'purchase-btn-icon' %>
 <% end %>
+<%= render "shared/footer" %>
