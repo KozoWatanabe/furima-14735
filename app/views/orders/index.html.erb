@@ -7,7 +7,10 @@
     </h1>
     <%# 購入内容の表示 %>
     <div class='buy-item-info'>
-      <%= image_tag @item.image.attached? ? @item.image : "item-sample.png", class: 'buy-item-img' %>
+       <% if @item.image.attached? %>
+           <%= image_tag @item.image, class: 'buy-item-img' %>
+       <% end %>
+       
         <div class='buy-item-right-content'>
         <h2 class='buy-item-text'>
           <%= @item.name %>
