@@ -37,7 +37,7 @@
     <%# カード情報の入力 %>
     <%= include_gon %>
   <%= form_with model: @order_form, url: item_orders_path(@item), method: :post, id: 'payment-form', local: true, data: { turbo: false } do |f| %>
-  <%= render 'shared/error_messages', model: @order_form %> %>
+  <%= render 'shared/error_messages', model: @order_form %>
  
 
   <div class='credit-card-form'>
