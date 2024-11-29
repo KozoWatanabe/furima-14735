@@ -1,18 +1,17 @@
 const pay = () => {
-  // 公開鍵の取得
   const publicKey = gon.public_key;
   const payjp = Payjp(publicKey);
   const elements = payjp.elements();
 
-  // カード番号入力欄
+  // カード番号入力用
   const cardNumber = elements.create("cardNumber");
   cardNumber.mount("#number-form");
 
-  // 有効期限入力欄
+  // 有効期限入力用
   const cardExpiry = elements.create("cardExpiry");
   cardExpiry.mount("#expiry-form");
 
-  // セキュリティコード入力欄
+  // セキュリティコード入力用
   const cardCvc = elements.create("cardCvc");
   cardCvc.mount("#cvc-form");
 
@@ -22,14 +21,7 @@ const pay = () => {
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       payjp.createToken(cardNumber).then((result) => {
-        if (result.error) {
-          // エラーメッセージの表示
-          const errorElement = document.getElementById("card-errors");
-          if (errorElement) {
-            errorElement.textContent = result.error.message;
-          }
-        } else {
-          // トークンをhiddenフィールドとしてフォームに追加
+        if (!result.error) {
           const tokenInput = document.createElement("input");
           tokenInput.setAttribute("type", "hidden");
           tokenInput.setAttribute("name", "token");
@@ -41,7 +33,7 @@ const pay = () => {
           cardExpiry.clear();
           cardCvc.clear();
 
-          // フォームを送信
+          // フォーム送信
           form.submit();
         }
       });
@@ -49,7 +41,7 @@ const pay = () => {
   }
 };
 
-// Turbo Driveでのページ読み込み時に実行
+// Turbo Driveでページ読み込み時に実行
 window.addEventListener("turbo:load", pay);
-// Turbo Driveでのページ再描画時に実行
+// ページ再描画時に実行
 window.addEventListener("turbo:render", pay);
