@@ -16,7 +16,7 @@ class Item < ApplicationRecord
   validates_format_of :price, with: /\A[0-9]+\z/, message: 'は半角数値で入力してください'
   validates :image, presence: true
   validates :category_id, :condition_id, :shipping_cost_id, :prefecture_id, :shipping_time_id,
-            numericality: { other_than: 0, message: 'を選択してください' }
+            numericality: { other_than: 1, message: 'を選択してください' }
 
   def sold_out?
     order.present?
