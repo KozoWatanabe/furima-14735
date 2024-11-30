@@ -73,6 +73,7 @@
 
 .lists-right {
   display: flex;
+  justify-content: space-around;
   list-style: none;
   align-items: flex-end;
 }
