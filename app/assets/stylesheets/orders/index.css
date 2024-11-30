@@ -132,11 +132,12 @@
   font-family: "Source Sans Pro", Helvetica, Arial, "æ¸¸ã‚´ã‚·ãƒƒã‚¯ä½“", "YuGothic", "ãƒ¡ã‚¤ãƒªã‚ª", "Meiryo", sans-serif
 }
 
-.error-message {
+.error-alert .error-message {
   font-size: 1.3vw;
   list-style: circle;
-  color: #b63000
+  color: #b63000;
 }
+
 
 /* /カード情報の入力 */
 

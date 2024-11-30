@@ -19,31 +19,33 @@ const pay = () => {
       event.preventDefault();
 
       const errorElement = document.getElementById("card-errors");
-      errorElement.textContent = ""; // 前回のエラーメッセージをクリア
+      errorElement.innerHTML = ""; // 既存のエラーメッセージをクリア
 
       payjp.createToken(cardNumber).then((result) => {
         if (result.error) {
           // エラーメッセージを表示
-          errorElement.textContent = "Token can't be blank";
+          const errorMessage = document.createElement("span");
+          errorMessage.classList.add("error-message");
+          errorMessage.textContent = "Token can't be blank";
+          errorElement.appendChild(errorMessage);
 
           // 入力欄をクリア
           cardNumber.clear();
           cardExpiry.clear();
           cardCvc.clear();
-          return;
+        } else {
+          const tokenInput = document.createElement("input");
+          tokenInput.setAttribute("type", "hidden");
+          tokenInput.setAttribute("name", "token");
+          tokenInput.setAttribute("value", result.id);
+          form.appendChild(tokenInput);
+
+          cardNumber.clear();
+          cardExpiry.clear();
+          cardCvc.clear();
+
+          form.submit();
         }
-
-        const tokenInput = document.createElement("input");
-        tokenInput.setAttribute("type", "hidden");
-        tokenInput.setAttribute("name", "token");
-        tokenInput.setAttribute("value", result.id);
-        form.appendChild(tokenInput);
-
-        cardNumber.clear();
-        cardExpiry.clear();
-        cardCvc.clear();
-
-        form.submit();
       });
     });
   }
