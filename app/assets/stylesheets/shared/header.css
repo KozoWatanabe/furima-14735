@@ -74,9 +74,10 @@
 
 .lists-right {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   list-style: none;
   align-items: flex-end;
+  gap: 3vw;
 }
 
 
