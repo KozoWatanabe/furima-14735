@@ -74,10 +74,9 @@
 
 .lists-right {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   list-style: none;
   align-items: flex-end;
-  gap: 3vw;
 }
 
 
@@ -102,6 +101,7 @@
 }
 
 .sign-up {
+  margin-right: 0; 
   text-decoration: none;
   color: #333333;
 }
