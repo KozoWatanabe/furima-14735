@@ -23,7 +23,13 @@ const pay = () => {
 
       payjp.createToken(cardNumber).then((result) => {
         if (result.error) {
-          errorElement.textContent = result.error.message; // エラーメッセージを表示
+          // エラーメッセージを表示
+          errorElement.textContent = "Token can't be blank";
+
+          // 入力欄をクリア
+          cardNumber.clear();
+          cardExpiry.clear();
+          cardCvc.clear();
           return;
         }
 
