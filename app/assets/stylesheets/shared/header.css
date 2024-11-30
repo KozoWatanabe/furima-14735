@@ -74,9 +74,10 @@
 
 .lists-right {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   list-style: none;
   align-items: flex-end;
+  gap: 20px; 
 }
 
 
@@ -96,7 +97,7 @@
 .login {
   text-decoration: none;
   line-height: 32px;
-  margin-right: 3vw;
+  margin-right: 0;
   color: #333333;
 }
 
