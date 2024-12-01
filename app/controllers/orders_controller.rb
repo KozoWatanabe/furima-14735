@@ -13,12 +13,17 @@ class OrdersController < ApplicationController
     @order_form = OrderSharedAddress.new(order_params)
 
     if @order_form.valid?
-      begin
-        pay_item
-        @order_form.save
-        render json: { success: true }, status: :ok
-      rescue Payjp::CardError => e
-        # Tokenエラーを固定文言で返す
+      if params[:token].present?
+        # トークンがある場合のみ支払い処理を実行
+        begin
+          pay_item
+          @order_form.save
+          render json: { success: true }, status: :ok
+        rescue Payjp::CardError => e
+          render json: { errors: ["カード情報に誤りがあります: #{e.message}"] }, status: :unprocessable_entity
+        end
+      else
+        # トークンがない場合のエラー
         render json: { errors: ["Token can't be blank"] }, status: :unprocessable_entity
       end
     else
