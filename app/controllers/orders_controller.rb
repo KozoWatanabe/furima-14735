@@ -12,23 +12,37 @@ class OrdersController < ApplicationController
   def create
     @order_form = OrderSharedAddress.new(order_params)
 
-    if @order_form.valid?
-      if params[:token].present?
-        # トークンがある場合のみ支払い処理を実行
-        begin
-          pay_item
-          @order_form.save
-          render json: { success: true }, status: :ok
-        rescue Payjp::CardError => e
-          render json: { errors: ["カード情報に誤りがあります: #{e.message}"] }, status: :unprocessable_entity
-        end
-      else
-        # トークンがない場合のエラー
-        render json: { errors: ["Token can't be blank"] }, status: :unprocessable_entity
+    # エラーコレクションを初期化
+    validation_errors = {}
+
+    # フォームのバリデーションエラーを収集
+    validation_errors.merge!(@order_form.errors.to_hash(full_messages: true)) unless @order_form.valid?
+
+    # トークンのバリデーション
+    validation_errors['token'] = ['トークンを入力してください'] if params[:token].blank?
+
+    # すべてのエラーがない場合に処理を実行
+    if validation_errors.empty?
+      begin
+        pay_item
+        @order_form.save
+        render json: { success: true }, status: :ok
+      rescue Payjp::CardError => e
+        render json: {
+          errors: {
+            card: ["カード情報に誤りがあります: #{e.message}"]
+          }
+        }, status: :unprocessable_entity
+      rescue StandardError => e
+        render json: {
+          errors: {
+            general: ["予期せぬエラーが発生しました: #{e.message}"]
+          }
+        }, status: :unprocessable_entity
       end
     else
-      # バリデーションエラーを返す
-      render json: { errors: @order_form.errors.full_messages }, status: :unprocessable_entity
+      # すべてのエラーを返す
+      render json: { errors: validation_errors }, status: :unprocessable_entity
     end
   end
 
@@ -49,15 +63,19 @@ class OrdersController < ApplicationController
   def order_params
     params.require(:order_shared_address).permit(
       :postal_code, :prefecture_id, :city, :address, :building_name, :phone_number
-    ).merge(user_id: current_user.id, item_id: @item.id, token: params[:token])
+    ).merge(
+      user_id: current_user.id,
+      item_id: @item.id,
+      token: params[:token]
+    )
   end
 
   def pay_item
-    Payjp.api_key = ENV['PAYJP_SECRET_KEY'] # 自身のPAY.JPテスト秘密鍵を記述しましょう
+    Payjp.api_key = ENV['PAYJP_SECRET_KEY']
     Payjp::Charge.create(
-      amount: @item.price, # 商品の値段
-      card: order_params[:token], # カードトークン
-      currency: 'jpy' # 通貨の種類（日本円）
+      amount: @item.price,
+      card: order_params[:token],
+      currency: 'jpy'
     )
   end
 end

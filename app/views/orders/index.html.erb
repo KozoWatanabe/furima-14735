@@ -41,18 +41,22 @@
   <%# エラーメッセージ表示セクション %>
   <div id="errors" class="error-alert">
     <ul>
-      <%# カードエラーメッセージのプレースホルダー (JavaScriptで動的に追加される) %>
-      <%# カードエラーが表示される場所 %>
-      <div id="card-errors">
-        <!-- JavaScriptでエラーが挿入されます -->
+      <%# クレジットカードエラーメッセージのコンテナ %>
+      <div id="card-errors" class="error-messages">
+        <%# JavaScriptで動的にカードエラーが挿入されます %>
       </div>
 
-      <%# サーバーエラーの表示 %>
-      <% @order_form.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
+      <%# 配送先情報などのサーバーサイドバリデーションエラー %>
+      <div id="address-errors" class="error-messages">
+        <% @order_form.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </div>
     </ul>
   </div>
+
+  <%# 以降のフォーム要素は変更なし %>
+<% end %>
 
   <%# カード情報入力セクション %>
   <div class='credit-card-form'>
