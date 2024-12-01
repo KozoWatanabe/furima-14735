@@ -11,20 +11,18 @@ class OrdersController < ApplicationController
 
   def create
     @order_form = OrderSharedAddress.new(order_params)
-    Rails.logger.debug "Order Params: #{order_params.inspect}"
 
     if @order_form.valid?
       begin
-        pay_item # 支払い処理を実行
+        pay_item
         @order_form.save
         render json: { success: true }, status: :ok
       rescue Payjp::CardError => e
-        # PayjpのエラーをキャッチしてJSONで返す
-        render json: { errors: ["クレジットカード情報に問題があります: #{e.message}"] }, status: :unprocessable_entity
+        # Tokenエラーを固定文言で返す
+        render json: { errors: ["Token can't be blank"] }, status: :unprocessable_entity
       end
     else
-      # バリデーションエラーをJSONで返す
-      Rails.logger.debug "Validation Errors: #{@order_form.errors.full_messages}"
+      # バリデーションエラーを返す
       render json: { errors: @order_form.errors.full_messages }, status: :unprocessable_entity
     end
   end

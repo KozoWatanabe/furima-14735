@@ -22,7 +22,7 @@ const pay = () => {
 
       payjp.createToken(cardNumber).then((result) => {
         if (result.error) {
-          // カードエラーをリストに追加
+          // カードエラーを表示
           const cardError = document.createElement("li");
           cardError.textContent = result.error.message;
           errorList.appendChild(cardError);
@@ -31,7 +31,7 @@ const pay = () => {
           cardExpiry.clear();
           cardCvc.clear();
         } else {
-          // トークンを取得後、サーバーへ送信
+          // サーバーにトークンとフォームデータを送信
           const token = result.id;
           const formData = new FormData(form);
           formData.append("token", token);
@@ -46,7 +46,7 @@ const pay = () => {
             .then((response) => {
               if (!response.ok) {
                 return response.json().then((data) => {
-                  // サーバーサイドのエラーメッセージをリストに追加
+                  // サーバーエラーを表示
                   data.errors.forEach((error) => {
                     const serverError = document.createElement("li");
                     serverError.textContent = error;
