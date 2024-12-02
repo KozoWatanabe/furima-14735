@@ -29,19 +29,14 @@
     <%= include_gon %>
 
 <%= form_with model: @order_form, url: item_orders_path(@item), method: :post, id: 'payment-form', local: true, data: { turbo: false } do |f| %>
-  <%# エラーメッセージ表示セクション %>
+  <%# サーバー＆カードエラーをまとめて表示するエリア %>
   <div id="errors" class="error-alert">
     <ul>
-      <%# カードエラーメッセージのプレースホルダー (JavaScriptで動的に追加される) %>
-      <%# カードエラーが表示される場所 %>
-      <div id="card-errors">
-        <!-- JavaScriptでエラーが挿入されます -->
-      </div>
-
-      <%# サーバーエラーの表示 %>
+      <%# サーバーサイドエラーの表示 %>
       <% @order_form.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
+      <%# カードエラーのプレースホルダー (JavaScriptで動的に追加される) %>
     </ul>
   </div>
 
