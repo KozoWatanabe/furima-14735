@@ -1,6 +1,6 @@
 const pay = () => {
   const publicKey = gon.public_key;
-  const payjp = Payjp(publicKey, { locale: "en" });
+  const payjp = Payjp(publicKey);
   const elements = payjp.elements();
 
   // カード情報の要素を作成
