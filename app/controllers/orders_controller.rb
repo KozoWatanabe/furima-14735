@@ -3,7 +3,6 @@ class OrdersController < ApplicationController
   before_action :set_item, only: [:index, :create]
   before_action :redirect_if_sold_out, only: [:index, :create]
   before_action :redirect_if_seller, only: [:index, :create]
-
   def index
     gon.public_key = ENV['PAYJP_PUBLIC_KEY']
     @order_form = OrderSharedAddress.new
@@ -14,18 +13,12 @@ class OrdersController < ApplicationController
     Rails.logger.debug "Order Params: #{order_params.inspect}"
 
     if @order_form.valid?
-      begin
-        pay_item # 支払い処理を実行
-        @order_form.save
-        render json: { success: true }, status: :ok
-      rescue Payjp::CardError => e
-        # PayjpのエラーをキャッチしてJSONで返す
-        render json: { errors: ["クレジットカード情報に問題があります: #{e.message}"] }, status: :unprocessable_entity
-      end
+      pay_item
+      @order_form.save
+      redirect_to root_path
     else
-      # バリデーションエラーをJSONで返す
       Rails.logger.debug "Validation Errors: #{@order_form.errors.full_messages}"
-      render json: { errors: @order_form.errors.full_messages }, status: :unprocessable_entity
+      render :index
     end
   end
 
