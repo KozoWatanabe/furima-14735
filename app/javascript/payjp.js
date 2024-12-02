@@ -20,51 +20,48 @@ const pay = () => {
       const errorList = document.getElementById("errors").querySelector("ul");
       errorList.innerHTML = ""; // 既存のエラーメッセージをクリア
 
-      // カードトークン生成
       payjp.createToken(cardNumber).then((result) => {
-        let token = null;
-
         if (result.error) {
           // カードエラーを表示
           const cardError = document.createElement("li");
-          cardError.textContent = result.error.message || "カード情報に誤りがあります。";
+          cardError.textContent = result.error.message;
           errorList.appendChild(cardError);
+
+          cardNumber.clear();
+          cardExpiry.clear();
+          cardCvc.clear();
         } else {
-          // トークンが生成された場合
-          token = result.id;
-        }
+          // サーバーにトークンとフォームデータを送信
+          const token = result.id;
+          const formData = new FormData(form);
+          formData.append("token", token);
 
-        // サーバーへリクエストを送信
-        const formData = new FormData(form);
-        if (token) {
-          formData.append("token", token); // トークンがある場合のみ追加
-        }
-
-        fetch("/items/" + form.dataset.itemId + "/orders", {
-          method: "POST",
-          headers: {
-            "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-          },
-          body: formData,
-        })
-          .then((response) => {
-            if (!response.ok) {
-              return response.json().then((data) => {
-                // サーバーエラーを表示
-                data.errors.forEach((error) => {
-                  const serverError = document.createElement("li");
-                  serverError.textContent = error;
-                  errorList.appendChild(serverError);
-                });
-              });
-            } else {
-              // 成功時にリダイレクト
-              window.location.href = "/";
-            }
+          fetch("/items/" + form.dataset.itemId + "/orders", {
+            method: "POST",
+            headers: {
+              "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+            },
+            body: formData,
           })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
+            .then((response) => {
+              if (!response.ok) {
+                return response.json().then((data) => {
+                  // サーバーエラーを表示
+                  data.errors.forEach((error) => {
+                    const serverError = document.createElement("li");
+                    serverError.textContent = error;
+                    errorList.appendChild(serverError);
+                  });
+                });
+              } else {
+                // 成功時にリダイレクト
+                window.location.href = "/";
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        }
       });
     });
   }
