@@ -11,19 +11,15 @@ class OrdersController < ApplicationController
 
   def create
     @order_form = OrderSharedAddress.new(order_params)
+    Rails.logger.debug { "Order Params: #{order_params.inspect}" }
 
     if @order_form.valid?
-      begin
-        pay_item
-        @order_form.save
-        render json: { success: true }, status: :ok
-      rescue Payjp::CardError => e
-        # Tokenエラーを固定文言で返す
-        render json: { errors: ["Token can't be blank"] }, status: :unprocessable_entity
-      end
+      pay_item
+      @order_form.save
+      redirect_to root_path
     else
-      # バリデーションエラーを返す
-      render json: { errors: @order_form.errors.full_messages }, status: :unprocessable_entity
+      Rails.logger.debug { "Validation Errors: #{@order_form.errors.full_messages}" }
+      render :index
     end
   end
 
@@ -44,19 +40,15 @@ class OrdersController < ApplicationController
   def order_params
     params.require(:order_shared_address).permit(
       :postal_code, :prefecture_id, :city, :address, :building_name, :phone_number
-    ).merge(
-      user_id: current_user.id,
-      item_id: @item.id,
-      token: params[:token]
-    )
+    ).merge(user_id: current_user.id, item_id: @item.id, token: params[:token])
   end
 
   def pay_item
-    Payjp.api_key = ENV['PAYJP_SECRET_KEY']
+    Payjp.api_key = ENV['PAYJP_SECRET_KEY'] # PAY.JPのテスト秘密鍵を設定
     Payjp::Charge.create(
-      amount: @item.price,
-      card: order_params[:token],
-      currency: 'jpy'
+      amount: @item.price, # 商品の値段
+      card: order_params[:token],    # カードトークン
+      currency: 'jpy'                # 通貨の種類（日本円）
     )
   end
 end
