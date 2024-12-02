@@ -1,12 +1,14 @@
 const pay = () => {
   const publicKey = gon.public_key;
-  const payjp = Payjp(publicKey);
+  const payjp = Payjp(publicKey, { locale: "en" });
   const elements = payjp.elements();
 
+  // カード情報の要素を作成
   const cardNumber = elements.create("cardNumber");
   const cardExpiry = elements.create("cardExpiry");
   const cardCvc = elements.create("cardCvc");
 
+  // 要素をDOMにマウント
   cardNumber.mount("#number-form");
   cardExpiry.mount("#expiry-form");
   cardCvc.mount("#cvc-form");
@@ -17,50 +19,49 @@ const pay = () => {
     form.addEventListener("submit", (event) => {
       event.preventDefault();
 
-      const errorList = document.getElementById("errors").querySelector("ul");
-      errorList.innerHTML = ""; // 既存のエラーメッセージをクリア
+      const errorElement = document.getElementById("card-errors");
+      errorElement.innerHTML = ""; // 既存のエラーメッセージをクリア
 
       payjp.createToken(cardNumber).then((result) => {
         if (result.error) {
-          // カードエラーをリストに追加
-          const cardError = document.createElement("li");
-          cardError.textContent = result.error.message;
-          errorList.appendChild(cardError);
+          // エラーメッセージを表示
+          const errorMessage = document.createElement("span");
+          errorMessage.classList.add("error-message");
+          errorMessage.textContent = result.error.message; // エラー内容を表示
+          errorElement.appendChild(errorMessage);
 
+          // クレジットカード情報をクリア
           cardNumber.clear();
           cardExpiry.clear();
           cardCvc.clear();
-        } else {
-          // トークンを取得後、サーバーへ送信
-          const token = result.id;
-          const formData = new FormData(form);
-          formData.append("token", token);
 
-          fetch("/items/" + form.dataset.itemId + "/orders", {
-            method: "POST",
-            headers: {
-              "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-            },
-            body: formData,
-          })
-            .then((response) => {
-              if (!response.ok) {
-                return response.json().then((data) => {
-                  // サーバーサイドのエラーメッセージをリストに追加
-                  data.errors.forEach((error) => {
-                    const serverError = document.createElement("li");
-                    serverError.textContent = error;
-                    errorList.appendChild(serverError);
-                  });
-                });
-              } else {
-                // 成功時にリダイレクト
-                window.location.href = "/";
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-            });
+          // クレジットカード要素を再度作成・マウント
+          const newCardNumber = elements.create("cardNumber");
+          const newCardExpiry = elements.create("cardExpiry");
+          const newCardCvc = elements.create("cardCvc");
+
+          newCardNumber.mount("#number-form");
+          newCardExpiry.mount("#expiry-form");
+          newCardCvc.mount("#cvc-form");
+
+          // 古い要素を上書き
+          cardNumber = newCardNumber;
+          cardExpiry = newCardExpiry;
+          cardCvc = newCardCvc;
+        } else {
+          // トークンをフォームに追加
+          const tokenInput = document.createElement("input");
+          tokenInput.setAttribute("type", "hidden");
+          tokenInput.setAttribute("name", "token");
+          tokenInput.setAttribute("value", result.id);
+          form.appendChild(tokenInput);
+
+          // クレジットカード情報をクリア
+          cardNumber.clear();
+          cardExpiry.clear();
+          cardCvc.clear();
+
+          form.submit();
         }
       });
     });
