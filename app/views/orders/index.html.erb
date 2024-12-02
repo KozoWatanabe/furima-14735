@@ -40,19 +40,22 @@
 <%= form_with model: @order_form, url: item_orders_path(@item), method: :post, id: 'payment-form', local: true, data: { turbo: false } do |f| %>
   <%# エラーメッセージ表示セクション %>
   <div id="errors" class="error-alert">
-  <ul>
-    <%# クレジットカードエラーメッセージ %>
-    <li id="card-errors" class="error-messages">
-      <%# JavaScriptで動的にカードエラーが挿入されます %>
-    </li>
+    <ul>
+      <%# クレジットカードエラーメッセージのコンテナ %>
+      <div id="card-errors" class="error-messages">
+        <%# JavaScriptで動的にカードエラーが挿入されます %>
+      </div>
 
-    <%# 配送先情報などのサーバーサイドバリデーションエラー %>
-    <% @order_form.errors.full_messages.each do |message| %>
-      <li class="error-messages"><%= message %></li>
-    <% end %>
-  </ul>
-</div>
+      <%# 配送先情報などのサーバーサイドバリデーションエラー %>
+      <div id="address-errors" class="error-messages">
+        <% @order_form.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </div>
+    </ul>
+  </div>
 
+  <%# 以降のフォーム要素は変更なし %>
 <% end %>
 
   <%# カード情報入力セクション %>
