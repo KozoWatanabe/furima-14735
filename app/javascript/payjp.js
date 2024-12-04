@@ -25,9 +25,9 @@ const pay = () => {
         if (result.error) {
           // エラーメッセージを表示
           const errorMessage = document.createElement("span");
-          errorMessage.classList.add("error-message");
-          errorMessage.textContent = result.error.message; // APIからのエラー内容を表示
-          errorElement.appendChild(errorMessage);
+          // errorMessage.classList.add("error-message");
+          // errorMessage.textContent = result.error.message; // APIからのエラー内容を表示
+          // errorElement.appendChild(errorMessage);
 
           // 入力欄をクリア
           cardNumber.clear();
@@ -44,8 +44,8 @@ const pay = () => {
           cardExpiry.clear();
           cardCvc.clear();
 
-          form.submit();
         }
+        form.submit();
       });
     });
   }
