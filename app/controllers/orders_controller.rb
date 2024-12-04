@@ -10,6 +10,7 @@ class OrdersController < ApplicationController
 
   def create
     @order_form = OrderSharedAddress.new(order_params)
+
     Rails.logger.debug "Order Params: #{order_params.inspect}"
 
     if @order_form.valid?

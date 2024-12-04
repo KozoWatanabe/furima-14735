@@ -1,15 +1,15 @@
 const pay = () => {
-  const publicKey = gon.public_key;
-  const payjp = Payjp(publicKey);
+  const publicKey = gon.public_key; // サーバーから公開キーを取得
+  const payjp = Payjp(publicKey); // Payjpオブジェクトの初期化
   const elements = payjp.elements();
 
-  const cardNumber = elements.create("cardNumber");
+  const cardNumber = elements.create("cardNumber"); // カード番号フィールド
   cardNumber.mount("#number-form");
 
-  const cardExpiry = elements.create("cardExpiry");
+  const cardExpiry = elements.create("cardExpiry"); // 有効期限フィールド
   cardExpiry.mount("#expiry-form");
 
-  const cardCvc = elements.create("cardCvc");
+  const cardCvc = elements.create("cardCvc"); // セキュリティコードフィールド
   cardCvc.mount("#cvc-form");
 
   const form = document.getElementById("payment-form");
@@ -26,7 +26,7 @@ const pay = () => {
           // エラーメッセージを表示
           const errorMessage = document.createElement("span");
           errorMessage.classList.add("error-message");
-          errorMessage.textContent = "Token can't be blank";
+          errorMessage.textContent = result.error.message; // APIからのエラー内容を表示
           errorElement.appendChild(errorMessage);
 
           // 入力欄をクリア
@@ -51,4 +51,6 @@ const pay = () => {
   }
 };
 
-window.addEventListener("turbo:load", pay);
+// Turbo Drive用イベントリスナーの設定
+document.addEventListener("turbo:load", pay); // ページロード時にpayを実行
+document.addEventListener("turbo:render", pay); // Turboで再レンダリングされた際にpayを実行
