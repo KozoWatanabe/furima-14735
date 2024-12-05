@@ -1,50 +1,45 @@
 const pay = () => {
   const publicKey = gon.public_key; // サーバーから公開キーを取得
-  const payjp = Payjp(publicKey); // Payjpオブジェクトの初期化
+  const payjp = Payjp(publicKey); // PAY.JPテスト公開鍵
   const elements = payjp.elements();
 
-  const cardNumber = elements.create("cardNumber"); // カード番号フィールド
-  cardNumber.mount("#number-form");
+  // カード情報入力欄を作成
+  const numberElement = elements.create("cardNumber");
+  const expiryElement = elements.create("cardExpiry");
+  const cvcElement = elements.create("cardCvc");
 
-  const cardExpiry = elements.create("cardExpiry"); // 有効期限フィールド
-  cardExpiry.mount("#expiry-form");
+  // 入力欄をフォームにマウント
+  numberElement.mount("#number-form");
+  expiryElement.mount("#expiry-form");
+  cvcElement.mount("#cvc-form");
 
-  const cardCvc = elements.create("cardCvc"); // セキュリティコードフィールド
-  cardCvc.mount("#cvc-form");
-
-  const form = document.getElementById("payment-form");
+  const form = document.getElementById("payment-form"); // フォームの取得
 
   if (form) {
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
+    form.addEventListener("submit", (e) => {
+      e.preventDefault(); // フォーム送信のデフォルト動作を停止
 
-      const errorElement = document.getElementById("card-errors");
-      errorElement.innerHTML = ""; // 既存のエラーメッセージをクリア
-
-      payjp.createToken(cardNumber).then((result) => {
-        if (result.error) {
-          // エラーメッセージを表示
-          const errorMessage = document.createElement("span");
-          // errorMessage.classList.add("error-message");
-          // errorMessage.textContent = result.error.message; // APIからのエラー内容を表示
-          // errorElement.appendChild(errorMessage);
-
-          // 入力欄をクリア
-          cardNumber.clear();
-          cardExpiry.clear();
-          cardCvc.clear();
+      // トークンの作成をリクエスト
+      payjp.createToken(numberElement).then((response) => {
+        if (response.error) {
+          // エラー処理
+          const errorElement = document.getElementById("card-errors");
+          errorElement.innerHTML = ""; // 既存のエラーメッセージをクリア
+          const errorMessage = `<span>${response.error.message}</span>`;
+          errorElement.insertAdjacentHTML("beforeend", errorMessage);
         } else {
-          const tokenInput = document.createElement("input");
-          tokenInput.setAttribute("type", "hidden");
-          tokenInput.setAttribute("name", "token");
-          tokenInput.setAttribute("value", result.id);
-          form.appendChild(tokenInput);
-
-          cardNumber.clear();
-          cardExpiry.clear();
-          cardCvc.clear();
-
+          // トークンを作成し、フォームに追加
+          const token = response.id;
+          const tokenInput = `<input value=${token} name='token' type="hidden">`;
+          form.insertAdjacentHTML("beforeend", tokenInput);
         }
+
+        // フィールドをクリア
+        numberElement.clear();
+        expiryElement.clear();
+        cvcElement.clear();
+
+        // フォームを送信
         form.submit();
       });
     });
@@ -52,5 +47,5 @@ const pay = () => {
 };
 
 // Turbo Drive用イベントリスナーの設定
-document.addEventListener("turbo:load", pay); // ページロード時にpayを実行
-document.addEventListener("turbo:render", pay); // Turboで再レンダリングされた際にpayを実行
+window.addEventListener("turbo:load", pay);
+window.addEventListener("turbo:render", pay);
